@@ -96,3 +96,4 @@ const AboutComponent: React.FC = () => {
         </main>
     );
 }
+export default AboutComponent;
