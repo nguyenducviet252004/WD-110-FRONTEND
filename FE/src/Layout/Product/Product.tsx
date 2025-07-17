@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ProductList from "../../Component/ProductComponent/ProductList";
-
+import AsideFilter from "../../Component/ProductComponent/AsideFilter";
+import Banner from "../../Component/ProductComponent/Banner";
+import ProductRelated from "../../Component/ProductComponent/RecentlyViewProduct";
 interface Filters {
     category: string | null;    
     size: string | null;
