@@ -1,0 +1,348 @@
+import Sale from "../../assets/imgs/page/homepage1/upto60.png";
+import Banner from "../../assets/imgs/page/homepage1/bg-section2.png";
+import ProductDetail from "../../assets/imgs/page/product/img.png";
+import ProductDetailTwo from "../../assets/imgs/page/product/img-2.png";
+import ProductDetailThree from "../../assets/imgs/page/product/img-3.png";
+import ProductDetailFour from "../../assets/imgs/page/product/img-4.png";
+import ProductDetailFive from "../../assets/imgs/page/product/img-5.png";
+import ProductDetailSix from "../../assets/imgs/page/product/img-6.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import Star from "../../assets/imgs/template/icons/star.svg";
+import api from "../../Axios/Axios";
+import { message, Pagination } from "antd";
+import { useState, useEffect } from "react";
+import { IProduct } from "../../types/cart";
+import type { PaginationProps } from "antd";
+import { Link } from "react-router-dom";
+const ProductWithCategories: React.FC = () => {
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [Newproducts, setNewProducts] = useState<IProduct[]>([]);
+  const [Topproducts, setTopProducts] = useState<IProduct[]>([]);
+  const pageSize = 8;
+  const [current, setCurrent] = useState(1);
+
+  const onChange: PaginationProps["onChange"] = (page) => {
+    console.log(page);
+    setCurrent(page);
+  };
+
+  const GetProductCategory = async () => {
+    try {
+      const { data } = await api.get(`/products`);
+      setProducts(data.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const paginatedProducts = products.slice(
+    (current - 1) * pageSize,
+    current * pageSize
+  );
+
+  const GetNewProducts = async () => {
+    try {
+      const { data } = await api.get(`/newproduct`);
+      setNewProducts(data.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const paginatedNewProducts = Newproducts.slice(
+    (current - 1) * pageSize,
+    current * pageSize
+  );
+
+  const GetTopProducts = async () => {
+    try {
+      const { data } = await api.get(`/topsell`);
+      setTopProducts(data.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const paginatedTopProducts = Topproducts.slice(
+    (current - 1) * pageSize,
+    current * pageSize
+  );
+
+  useEffect(() => {
+    GetProductCategory();
+    GetNewProducts();
+    GetTopProducts();
+  }, []);
+
+  return (
+    <>
+      <style>
+        {`
+        .rounded-text {
+  background-color:rgb(124, 171, 207) !important; /* xanh dương nhạt */
+}
+
+    .nav-tabs .nav-link.active {
+    color:rgb(152, 199, 220) !important;  /* màu chữ xanh */
+    border-color:rgb(142, 190, 219) !important;  /* gạch dưới xanh */
+}
+    .nav-tabs .nav-link:hover {
+    color:rgb(126, 185, 206) !important;
+}
+
+  `}
+      </style>
+
+      <section className="section block-section-1">
+        <div className="container">
+          <div className="text-center">
+            <p className="font-xl brand-2 wow animate__animated animate__fadeIn">
+              <span className="rounded-text">MỚI CÓ TRONG CỬA HÀNG</span>
+            </p>
+            <div className="box-tabs wow animate__animated animate__fadeIn">
+              <ul className="nav nav-tabs" role="tablist">
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="nav-link active"
+                    id="girls-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#girls"
+                    type="button"
+                    role="tab"
+                    aria-controls="girls"
+                    aria-selected="true"
+                  >
+                    Tất cả sản phẩm
+                  </button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="nav-link"
+                    id="boys-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#boys"
+                    type="button"
+                    role="tab"
+                    aria-controls="boys"
+                    aria-selected="false"
+                  >
+                    Sản phẩm bán chạy nhất
+                  </button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="nav-link"
+                    id="accessories-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#accessories"
+                    type="button"
+                    role="tab"
+                    aria-controls="accessories"
+                    aria-selected="false"
+                  >
+                    Sản phẩm mới về
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="tab-content">
+            {/* Tất cả sản phẩm */}
+            <div
+              className="tab-pane fade show active"
+              id="girls"
+              role="tabpanel"
+              aria-labelledby="girls-tab"
+            >
+              <div className="row">
+                {paginatedProducts.map((product) => (
+                  <div
+                    className="col-xl-3 col-lg-4 col-md-6 col-sm-6 wow animate__animated animate__fadeIn"
+                    data-wow-delay=".5s"
+                  >
+                    <Link to={`/product-detail/${product.id}`}>
+                      <div className="cardProduct wow fadeInUp">
+                        <div className="cardImage">
+                          <a>
+                            <img
+                              className="imageMain"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                            <img
+                              className="imageHover"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                          </a>
+                          <div className="button-select">
+                            <a>Add to Cart</a>
+                          </div>
+                        </div>
+                        <div className="cardInfo">
+                          <h6
+                            className="font-md-bold cardTitle"
+                            style={{
+                              fontFamily: "Raleway",
+                              fontWeight: "normal",
+                            }}
+                          >
+                            {product.name}
+                          </h6>
+                          <p
+                            className="font-lg cardDesc"
+                            style={{ fontFamily: "Raleway" }}
+                          >
+                            {" "}
+                            {Math.round(product.price ?? 0).toLocaleString(
+                              "vi-VN",
+                              { style: "currency", currency: "VND" }
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sản phẩm bán chạy */}
+            <div
+              className="tab-pane fade"
+              id="boys"
+              role="tabpanel"
+              aria-labelledby="boys-tab"
+            >
+              <div className="row">
+                {paginatedTopProducts.map((product) => (
+                  <div
+                    className="col-xl-3 col-lg-4 col-md-6 col-sm-6 wow animate__animated animate__fadeIn"
+                    data-wow-delay=".1s"
+                  >
+                    <Link to={`/product-detail/${product.id}`}>
+                      <div className="cardProduct wow fadeInUp">
+                        <div className="cardImage">
+                          <label className="lbl-hot">hot</label>
+                          <a href="product-single.html">
+                            <img
+                              className="imageMain"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                            <img
+                              className="imageHover"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                          </a>
+                          <div className="button-select">
+                            <a>Add to Cart</a>
+                          </div>
+                        </div>
+                        <div className="cardInfo">
+                          <h6
+                            className="font-md-bold cardTitle"
+                            style={{
+                              fontFamily: "Raleway",
+                              fontWeight: "normal",
+                            }}
+                          >
+                            {product.name}
+                          </h6>
+                          <p
+                            className="font-lg cardDesc"
+                            style={{ fontFamily: "Raleway" }}
+                          >
+                            {" "}
+                            {Math.round(product.price ?? 0).toLocaleString(
+                              "vi-VN",
+                              { style: "currency", currency: "VND" }
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sản phẩm mới về */}
+            <div
+              className="tab-pane fade"
+              id="accessories"
+              role="tabpanel"
+              aria-labelledby="accessories-tab"
+            >
+              <div className="row">
+                {paginatedNewProducts.map((product) => (
+                  <div
+                    className="col-xl-3 col-lg-4 col-md-6 col-sm-6 wow animate__animated animate__fadeIn"
+                    data-wow-delay=".1s"
+                  >
+                    <Link to={`/product-detail/${product.id}`}>
+                      <div className="cardProduct wow fadeInUp">
+                        <div className="cardImage">
+                          <label className="lbl-hot">new</label>
+                          <a href="product-single.html">
+                            <img
+                              className="imageMain"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                            <img
+                              className="imageHover"
+                              src={product.avatar_url}
+                              alt="110store"
+                            />
+                          </a>
+                          <div className="button-select">
+                            <a>Add to Cart</a>
+                          </div>
+                        </div>
+                        <div className="cardInfo">
+                          <h6
+                            className="font-md-bold cardTitle"
+                            style={{
+                              fontFamily: "Raleway",
+                              fontWeight: "normal",
+                            }}
+                          >
+                            {product.name}
+                          </h6>
+                          <p
+                            className="font-lg cardDesc"
+                            style={{ fontFamily: "Raleway" }}
+                          >
+                            {" "}
+                            {Math.round(product.price ?? 0).toLocaleString(
+                              "vi-VN",
+                              { style: "currency", currency: "VND" }
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <nav className="box-pagination" style={{ float: "right" }}>
+            <Pagination
+              current={current}
+              onChange={onChange}
+              total={products.length}
+              pageSize={pageSize}
+            />
+          </nav>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default ProductWithCategories;
